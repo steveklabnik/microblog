@@ -11,9 +11,11 @@ var app = module.exports = express.createServer();
 
 // for couch
 var cradle = require('cradle');
-var host = 'https://mamund.cloudant.com';
+var arr = process.env.CLOUDANT_URL.match(/@(.*)\.heroku.cloudant.com/);
+var host = 'https://' + arr[1] + '.heroku.cloudant.com'
 var port = 443;
-var credentials = {username: 'mamund', password: 'M1cr0Bl0g' };
+var arr = process.env.CLOUDANT_URL.match(/https:\/\/(.*):(.*)@/);
+var credentials = {username: arr[1], password: arr[2] };
 var local=false;
 var db;
 if(local===true) {
@@ -25,7 +27,7 @@ else {
 
 // global data
 var contentType = 'text/html'; //'application/xhtml+xml';
-var baseUrl = 'http://64.30.143.38/microblog/';
+var baseUrl = 'http://alps-microblog.herokuapp.com/microblog/';
 
 // Configuration
 
@@ -380,8 +382,5 @@ function badRequest(res) {
   res.end('Bad Request');
 }
 
-// Only listen on $ node app.js
-if (!module.parent) {
-  app.listen(process.env.PORT || 80);
-  console.log("Express server listening on port %d", app.address().port);
-}
+app.listen(process.env.PORT || 80);
+console.log("Express server listening on port %d", app.address().port);
